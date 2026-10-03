@@ -36,7 +36,7 @@ function App() {
   };
 
   return (
-      <Router basename="/Catalago_De_Productos">
+      <Router basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
 
         <div className="flex flex-col min-h-screen">
