@@ -8,7 +8,25 @@ export const calculateScore = (specs, price) => {
   return Math.round((perf * 0.4) + (qual * 0.3) + (val * 0.3));
 };
 
-export const generateConclusion = (productA, productB) => {
+// Añade una nota breve cuando se comparan productos de gamas distintas.
+const withGama = (criterion, a, b) =>
+  a.gama && b.gama && a.gama !== b.gama
+    ? `${criterion} Ojo: comparas gama ${a.gama.toLowerCase()} contra gama ${b.gama.toLowerCase()}.`
+    : criterion;
+
+export const generateConclusion = (productA, productB) => ({
+  ...buildConclusion(productA, productB),
+  criterion: withGama(pickCriterion(productA, productB), productA, productB)
+});
+
+const pickCriterion = (productA, productB) => {
+  if (productA.category === 'Inteligencia artificial' && productB.category === 'Inteligencia artificial') return 'Criterio: herramientas incluidas, porque ambos planes cuestan lo mismo.';
+  if (!hasPrice(productA) || !hasPrice(productB) || productA.currency !== productB.currency) return 'Criterio: características técnicas, porque no hay precios comparables.';
+  if (calculateScore(productA.specs) === null || calculateScore(productB.specs) === null) return 'Criterio: precio, porque estos modelos no tienen puntuación orientativa.';
+  return 'Criterio: puntuación orientativa (40% rendimiento, 30% calidad, 30% calidad/precio); si empatan, gana el más barato.';
+};
+
+const buildConclusion = (productA, productB) => {
   const scoreA = calculateScore(productA.specs, productA.price);
   const scoreB = calculateScore(productB.specs, productB.price);
   

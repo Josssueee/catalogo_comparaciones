@@ -79,13 +79,13 @@ const Home = ({ toggleCompare, compareList, startComparison }) => {
         <div>
           <h2 className="text-3xl font-bold mb-3">Comparaciones por gama</h2>
           <p className="text-muted mb-6">Dos opciones de cada gama, listas para comparar lado a lado.</p>
-          <div className="grid md:grid-cols-2 gap-6">
-            {['Celulares', 'Computadoras'].map(category => <div key={category} className="bg-card rounded-2xl border border-border p-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {['Celulares', 'Computadoras', 'Procesadores (CPU)'].map(category => <div key={category} className="bg-card rounded-2xl border border-border p-6">
               <h3 className="text-xl font-bold mb-5">{category}</h3>
               <div className="space-y-4">{['Baja', 'Media', 'Alta'].map(gama => {
                 const pair = products.filter(p => p.category === category && p.gama === gama).slice(0, 2);
                 return <div key={gama} className="border-t border-border pt-4">
-                  <div className="flex items-center justify-between gap-3"><Link className="font-bold hover:text-primary" to={`/products?category=${category}&gama=${gama}`}>Gama {gama.toLowerCase()}</Link>
+                  <div className="flex items-center justify-between gap-3"><Link className="font-bold hover:text-primary" to={`/products?category=${encodeURIComponent(category)}&gama=${gama}`}>Gama {gama.toLowerCase()}</Link>
                     <Link className="text-primary text-sm hover:underline" to="/compare" onClick={() => startComparison(pair)}>Comparar dos →</Link></div>
                   <p className="text-xs text-muted mt-2 leading-relaxed">{pair.map(p => p.name).join(' · ')}</p>
                 </div>;

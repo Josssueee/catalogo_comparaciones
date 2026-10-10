@@ -10,7 +10,7 @@ const { products, categories } = await server.ssrLoadModule('/src/data/mockData.
 await server.close();
 
 test('all assignment categories have multiple priced products and local images', () => {
-  assert.equal(products.length, 130);
+  assert.equal(products.length, 142);
   assert.equal(new Set(products.map(p => p.id)).size, products.length);
   assert.equal(categories.length, 26);
   for (const category of categories) assert.ok(products.filter(p => p.category === category).length >= 2, category);
@@ -18,16 +18,29 @@ test('all assignment categories have multiple priced products and local images',
     assert.ok(product.price > 0, product.name);
     assert.doesNotMatch(product.name, /seminuev|reacondicionad|usado/i);
     assert.equal(product.currency, 'GTQ', product.name);
-    assert.ok(existsSync(new URL('../public' + product.image, import.meta.url)), product.name);
+    if (/^https:\/\//.test(product.image)) assert.match(product.image, /^https:\/\/cdn\.shopify\.com\//, product.name);
+    else assert.ok(existsSync(new URL('../public/' + product.image.replace(/^\/+/, ''), import.meta.url)), product.name);
     assert.equal(new URL(product.sourceUrl).protocol, 'https:');
   }
 });
-test('phones and computers have at least two choices in every required tier', () => {
-  for (const category of ['Celulares', 'Computadoras']) {
+test('phones, computers and processors have at least two choices in every tier', () => {
+  for (const category of ['Celulares', 'Computadoras', 'Procesadores (CPU)']) {
     for (const gama of ['Baja', 'Media', 'Alta']) {
       assert.ok(products.filter(p => p.category === category && p.gama === gama).length >= 2, `${category}: ${gama}`);
     }
   }
+});
+test('every phone, computer and processor has a tier', () => {
+  for (const p of products.filter(p => ['Celulares', 'Computadoras', 'Procesadores (CPU)'].includes(p.category))) {
+    assert.ok(['Baja', 'Media', 'Alta'].includes(p.gama), p.name);
+  }
+});
+test('every comparison explains its short criterion', () => {
+  const byId = id => products.find(p => p.id === id);
+  assert.match(generateConclusion(byId(1), byId(4)).criterion, /^Criterio: puntuación.*gama baja contra gama alta\.$/);
+  assert.match(generateConclusion(byId(131), byId(132)).criterion, /^Criterio: precio[^.]*\.$/);
+  const ai = products.filter(p => p.category === 'Inteligencia artificial');
+  assert.match(generateConclusion(...ai).criterion, /^Criterio: herramientas/);
 });
 test('AI subscription conversion keeps monthly billing and does not invent scores', () => {
   const ai = products.filter(p => p.category === 'Inteligencia artificial');
@@ -42,7 +55,7 @@ test('AI subscription conversion keeps monthly billing and does not invent score
   assert.equal(result.winner, null);
   assert.equal(result.scoreA, null);
   assert.match(result.reason, /ChatGPT Plus/);
-  const newPCs = products.filter(p => p.category === 'Computadoras' && p.gama === 'Alta');
+  const newPCs = products.filter(p => p.category === 'Computadoras' && p.gama === 'Alta' && p.id > 80);
   assert.equal(generateConclusion(...newPCs).scoreA, null);
   assert.equal(generateConclusion(...newPCs).winner, null);
 });

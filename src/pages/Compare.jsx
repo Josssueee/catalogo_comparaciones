@@ -157,12 +157,14 @@ const Compare = ({ compareList, removeCompare }) => {
                 <p className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">{conclusion.winner.name}</p>
                 <div className="w-16 h-1 bg-primary mb-6 rounded-full" />
                 <p className="text-xl text-muted/90 leading-relaxed max-w-3xl">"{conclusion.reason}"</p>
+                <p className="text-sm text-primary/90 font-medium mt-4 max-w-3xl">{conclusion.criterion}</p>
               </div>
             ) : (
               <div className="relative z-10">
                 <p className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">{conclusion.title || 'Elige según tus necesidades'}</p>
                 <div className="w-16 h-1 bg-primary mb-6 rounded-full" />
                 <p className="text-xl text-muted/90 leading-relaxed max-w-3xl">"{conclusion.reason}"</p>
+                <p className="text-sm text-primary/90 font-medium mt-4 max-w-3xl">{conclusion.criterion}</p>
               </div>
             )}
           </section>

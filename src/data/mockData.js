@@ -449,6 +449,15 @@ const catalogProducts = [
   }
 ];
 
+// Gama de los productos base (los del catálogo ampliado la traen en su JSON).
+// Computadoras: baja = uso básico, media = productividad o gaming de entrada,
+// alta = gráfica dedicada de mayor potencia (más de Q11,000).
+const gamaById = {
+  1: 'Baja', 2: 'Media', 3: 'Media', 4: 'Alta', 5: 'Alta',
+  46: 'Media', 47: 'Media', 48: 'Alta', 49: 'Alta', 50: 'Alta',
+  56: 'Media', 57: 'Alta', 58: 'Alta', 59: 'Media', 60: 'Media'
+};
+
 export const products = [...catalogProducts, ...expandedCatalog].map(product => {
   const verified = verifiedCatalog[product.id];
   const photo = imageSources[product.id];
@@ -458,8 +467,7 @@ export const products = [...catalogProducts, ...expandedCatalog].map(product => 
     currency: 'GTQ',
     priceStatus: 'unverified',
     ...product,
-    ...([46, 47].includes(product.id) ? { gama: 'Media' } : {}),
-    ...([48, 49, 50].includes(product.id) ? { gama: 'Alta' } : {}),
+    ...(gamaById[product.id] ? { gama: gamaById[product.id] } : {}),
     sourceUrl: `https://www.pacifiko.com/index.php?route=product/search&search=${encodeURIComponent(product.name)}`,
     ...(product.sourceUrl ? { sourceUrl: product.sourceUrl } : {}),
     ...(photo ? { ...photo, image: `/images/product-${product.id}.jpg` } : {}),
