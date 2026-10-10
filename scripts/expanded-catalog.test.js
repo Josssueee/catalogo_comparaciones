@@ -10,15 +10,15 @@ const { products, categories } = await server.ssrLoadModule('/src/data/mockData.
 await server.close();
 
 test('all assignment categories have multiple priced products and local images', () => {
-  assert.equal(products.length, 142);
+  assert.equal(products.length, 172);
   assert.equal(new Set(products.map(p => p.id)).size, products.length);
-  assert.equal(categories.length, 26);
+  assert.equal(categories.length, 35);
   for (const category of categories) assert.ok(products.filter(p => p.category === category).length >= 2, category);
   for (const product of products) {
     assert.ok(product.price > 0, product.name);
     assert.doesNotMatch(product.name, /seminuev|reacondicionad|usado/i);
     assert.equal(product.currency, 'GTQ', product.name);
-    if (/^https:\/\//.test(product.image)) assert.match(product.image, /^https:\/\/cdn\.shopify\.com\//, product.name);
+    if (/^https:\/\//.test(product.image)) assert.match(product.image, /^https:\/\/(cdn\.shopify\.com|www\.creativo3d\.com|www-cdn\.djiits\.com)\//, product.name);
     else assert.ok(existsSync(new URL('../public/' + product.image.replace(/^\/+/, ''), import.meta.url)), product.name);
     assert.equal(new URL(product.sourceUrl).protocol, 'https:');
   }
@@ -30,8 +30,10 @@ test('phones, computers and processors have at least two choices in every tier',
     }
   }
 });
-test('every phone, computer and processor has a tier', () => {
-  for (const p of products.filter(p => ['Celulares', 'Computadoras', 'Procesadores (CPU)'].includes(p.category))) {
+test('every phone, computer, processor and new category product has a tier', () => {
+  const tiered = ['Celulares', 'Computadoras', 'Procesadores (CPU)', 'Impresoras 3D', 'Routers', 'Fuentes de poder', 'UPS',
+    'Webcams', 'Enfriamiento (CPU)', 'Bocinas', 'Memorias USB', 'Drones'];
+  for (const p of products.filter(p => tiered.includes(p.category))) {
     assert.ok(['Baja', 'Media', 'Alta'].includes(p.gama), p.name);
   }
 });

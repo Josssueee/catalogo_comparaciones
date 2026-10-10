@@ -8,11 +8,14 @@ import variants from './catalogVariants.json';
 
 export const categories = [
   "Procesadores (CPU)", "Tarjetas gráficas (GPU)", "Memoria RAM", "SSD",
-  "Tarjetas madre", "Monitores/Pantallas", "Gabinetes/Cajas", "Teclados", 
+  "Tarjetas madre", "Fuentes de poder", "Enfriamiento (CPU)",
+  "Monitores/Pantallas", "Gabinetes/Cajas", "Teclados",
   "Mouse", "Auriculares", "Sillas", "Tablets", "Celulares", 
   "Computadoras", "Consolas", "Microcontroladores",
   "Impresoras", "Discos duros HDD", "Tarjetas SD", "Micrófonos", "SmartWatch",
-  "Cañoneras", "Fotocopiadoras", "Scanners", "Plotters", "Inteligencia artificial"
+  "Cañoneras", "Fotocopiadoras", "Scanners", "Plotters", "Impresoras 3D",
+  "UPS", "Routers", "Webcams", "Bocinas", "Memorias USB", "Drones",
+  "Inteligencia artificial"
 ];
 
 const catalogProducts = [
